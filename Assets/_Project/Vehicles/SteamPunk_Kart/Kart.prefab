@@ -290,6 +290,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4868929856647560}
   - component: {fileID: 114273982993795998}
+  - component: {fileID: 114591440684911280}
+  - component: {fileID: 114897488946237358}
   m_Layer: 0
   m_Name: Kart
   m_TagString: Untagged
@@ -5193,6 +5195,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 100
   rotationSpeed: 100
+--- !u!114 &114591440684911280
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1251760928143064}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0237f951bac39c46b4a898cf24177a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  visibleDistance: 200
+--- !u!114 &114897488946237358
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1251760928143064}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40e6486659cec1f43a1c4d4f62421955, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!124 &124770820412272594
 Behaviour:
   m_ObjectHideFlags: 1
