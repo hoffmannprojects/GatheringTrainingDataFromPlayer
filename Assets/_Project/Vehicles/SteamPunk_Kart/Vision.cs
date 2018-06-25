@@ -40,6 +40,8 @@ public class Vision : MonoBehaviour
         {
             Debug.DrawRay(transform.position, rayDirection * visibleDistance, rayColors[i]);
 
+            hitDistances[i] = visibleDistance;
+
             if (Physics.Raycast(transform.position, rayDirection, out hits[i], visibleDistance))
             {
                 hitDistances[i] = hits[i].distance;
