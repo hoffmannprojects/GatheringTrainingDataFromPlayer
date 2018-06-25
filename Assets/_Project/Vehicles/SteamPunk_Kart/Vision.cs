@@ -7,12 +7,11 @@ using UnityEngine.Assertions;
 public class Vision : MonoBehaviour 
 {
     [SerializeField] private float visibleDistance = 200f;
+    private const int rayCount = 5;
 
-	// Use this for initialization
-	void Start () 
-	{
-		
-	}
+    #region PROPERTIES
+    public float[] HitDistances { get; private set; } = new float[rayCount];
+    #endregion  
 	
 	// Update is called once per frame
 	void Update ()
@@ -26,27 +25,32 @@ public class Vision : MonoBehaviour
     /// </summary>
     private void CastRays ()
     {
-        const int rayCount = 5;
         // Direction of the first raycast.
-        var rayDirection = -transform.right;
+        var nextRayDirection = -transform.right;
         var angleStepSize = 45f;
 
         var hits = new RaycastHit[rayCount];
-        var hitDistances = new float[rayCount];
         var rayColors = new Color[] { Color.green, Color.cyan, Color.blue, Color.yellow, Color.red };
 
         // Cast rays in angleStepSize degree steps.
         for (int i = 0; i < hits.Length; i++)
         {
-            Debug.DrawRay(transform.position, rayDirection * visibleDistance, rayColors[i]);
+            Debug.DrawRay(transform.position, nextRayDirection * visibleDistance, rayColors[i]);
 
-            hitDistances[i] = visibleDistance;
+            HitDistances[i] = 0;
 
-            if (Physics.Raycast(transform.position, rayDirection, out hits[i], visibleDistance))
+            if (Physics.Raycast(transform.position, nextRayDirection, out hits[i], visibleDistance))
             {
-                hitDistances[i] = hits[i].distance;
+                // Importandt!:
+                // Normalize to a range between 0 and 1.
+                var normalizedHitDistance = hits[i].distance / visibleDistance;
+
+                // Make short distances have big values (towards 1) 
+                // and long distances have small values (towards 0)
+                // in order to make neurons react more to short distances.
+                HitDistances[i] = 1 - normalizedHitDistance;
             }
-            rayDirection = Quaternion.AngleAxis(angleStepSize, Vector3.up) * rayDirection;
+            nextRayDirection = Quaternion.AngleAxis(angleStepSize, Vector3.up) * nextRayDirection;
         }
     }
 }
