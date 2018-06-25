@@ -9,12 +9,17 @@ public class CarController : MonoBehaviour
     [SerializeField] private float speed = 100f;
     [SerializeField] private float rotationSpeed = 100.0F;
 
+    #region PROPERTIES
+    public float TranslationInput { get; private set; } = 0;
+    public float RotationInput { get; private set; } = 0; 
+    #endregion
+
     private void Update ()
     {
-        float translationInput = Input.GetAxis("Vertical");
-        float rotationInput = Input.GetAxis("Horizontal");
-        float translation = translationInput * speed * Time.deltaTime;
-        float rotation = rotationInput * rotationSpeed * Time.deltaTime;
+        TranslationInput = Input.GetAxis("Vertical");
+        RotationInput = Input.GetAxis("Horizontal");
+        float translation = TranslationInput * speed * Time.deltaTime;
+        float rotation = RotationInput * rotationSpeed * Time.deltaTime;
         transform.Translate(0, 0, translation);
         transform.Rotate(0, rotation, 0);
     }
