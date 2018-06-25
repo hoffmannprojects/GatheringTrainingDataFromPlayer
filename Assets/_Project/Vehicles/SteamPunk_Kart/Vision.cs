@@ -15,64 +15,36 @@ public class Vision : MonoBehaviour
 	}
 	
 	// Update is called once per frame
-	void Update () 
-	{
-        // Raycasts.
-        RaycastHit hit;
+	void Update ()
+    {
+        CastRays();
+    }
 
-        // Raycast left.
-        float leftDistance = visibleDistance;
-        Vector3 direction = -transform.right;
+    /// <summary>
+    /// Rays are being cast in constant steps starting from the left vector [0].
+    /// Resulting hits are stored in an array.
+    /// </summary>
+    private void CastRays ()
+    {
+        const int numberOfRays = 5;
+        // Direction of the first raycast.
+        var raycastDirection = -transform.right;
+        var angleStepSize = 45f;
 
-        Debug.DrawRay(transform.position, direction * visibleDistance, Color.green);
+        var hits = new RaycastHit[numberOfRays];
+        var hitDistances = new float[numberOfRays];
+        var raycastColors = new Color[] { Color.green, Color.cyan, Color.blue, Color.yellow, Color.red };
 
-        if (Physics.Raycast(transform.position, direction, out hit, visibleDistance))
+        // Cast rays in angleStepSize degree steps.
+        for (int i = 0; i < hits.Length; i++)
         {
-            leftDistance = hit.distance;
-        }
+            Debug.DrawRay(transform.position, raycastDirection * visibleDistance, raycastColors[i]);
 
-        // Raycast 45 degrees forward-left.
-        float forwardLeftDistance = visibleDistance;
-        direction = Quaternion.AngleAxis(-45f, Vector3.up) * transform.forward;
-
-        Debug.DrawRay(transform.position, direction * visibleDistance, Color.cyan);
-
-        if (Physics.Raycast(transform.position, direction, out hit, visibleDistance))
-        {
-            forwardLeftDistance = hit.distance;
-        }
-
-        // Raycast forward.
-        float forwardDistance = visibleDistance;
-        direction = transform.forward;
-
-        Debug.DrawRay(transform.position, direction * visibleDistance, Color.blue);
-
-        if (Physics.Raycast(transform.position, direction, out hit, visibleDistance))
-        {
-            forwardDistance = hit.distance;
-        }
-
-        // Raycast 45 degrees forward-right.
-        float forwardRightDistance = visibleDistance;
-        direction = Quaternion.AngleAxis(45f, Vector3.up) * transform.forward;
-
-        Debug.DrawRay(transform.position, direction * visibleDistance, Color.yellow);
-
-        if (Physics.Raycast(transform.position, direction, out hit, visibleDistance))
-        {
-            forwardRightDistance = hit.distance;
-        }
-
-        // Raycast right.
-        float rightDistance = visibleDistance;
-        direction = transform.right;
-
-        Debug.DrawRay(transform.position, direction * visibleDistance, Color.red);
-
-        if (Physics.Raycast(transform.position, direction, out hit, visibleDistance))
-        {
-            rightDistance = hit.distance;
+            if (Physics.Raycast(transform.position, raycastDirection, out hits[i], visibleDistance))
+            {
+                hitDistances[i] = hits[i].distance;
+            }
+            raycastDirection = Quaternion.AngleAxis(angleStepSize, Vector3.up) * raycastDirection;
         }
     }
 }
