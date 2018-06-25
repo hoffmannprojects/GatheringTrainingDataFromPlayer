@@ -11,11 +11,13 @@ public class CarController : MonoBehaviour
 
     private void Update ()
     {
-        float translation = Input.GetAxis("Vertical") * speed;
-        float rotation = Input.GetAxis("Horizontal") * rotationSpeed;
-        translation *= Time.deltaTime;
-        rotation *= Time.deltaTime;
+        float translationInput = Input.GetAxis("Vertical");
+        float rotationInput = Input.GetAxis("Horizontal");
+        float translation = translationInput * speed * Time.deltaTime;
+        float rotation = rotationInput * rotationSpeed * Time.deltaTime;
         transform.Translate(0, 0, translation);
         transform.Rotate(0, rotation, 0);
     }
+
+    //TODO: Collect inputs and raycast distances as training data to act as input for the ANN.
 }
