@@ -45,10 +45,7 @@ public class Vision : MonoBehaviour
                 // Normalize to a range between 0 and 1.
                 var normalizedHitDistance = hits[i].distance / visibleDistance;
 
-                // Make short distances have big values (towards 1) 
-                // and long distances have small values (towards 0)
-                // in order to make neurons react more to short distances.
-                HitDistances[i] = 1 - normalizedHitDistance;
+                HitDistances[i] = normalizedHitDistance;
             }
             nextRayDirection = Quaternion.AngleAxis(angleStepSize, Vector3.up) * nextRayDirection;
         }

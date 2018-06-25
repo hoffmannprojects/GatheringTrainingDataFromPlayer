@@ -31,12 +31,21 @@ public class TrainingDataCollector : MonoBehaviour
 
         for (int i = 0; i < vision.HitDistances.Length; i++)
         {
-            trainingSet += vision.HitDistances[i] + ",";
+            // Make short distances have big values (towards 1) 
+            // and long distances have small values (towards 0)
+            // in order to make neurons react more to short distances.
+            float hitDistanceRounded = 1 - RoundToPointFive(vision.HitDistances[i]);
+
+            trainingSet += hitDistanceRounded + ",";
         }
 
-        trainingSet += carController.TranslationInput + "," + carController.RotationInput;
+        trainingSet += RoundToPointFive(carController.TranslationInput) + "," + RoundToPointFive(carController.RotationInput);
 
-        collectedTrainingData.Add(trainingSet);
+        // Collect only new training data.
+        if (!collectedTrainingData.Contains(trainingSet))
+        {
+            collectedTrainingData.Add(trainingSet);
+        }
     }
 
     private void OnApplicationQuit ()
@@ -46,5 +55,15 @@ public class TrainingDataCollector : MonoBehaviour
             trainingDataFile.WriteLine(trainingSet);
         }
         trainingDataFile.Close();
+    }
+
+    /// <summary>
+    /// Round to the nearest .5 value.
+    /// </summary>
+    /// <param name="x"></param>
+    /// <returns></returns>
+    private float RoundToPointFive (float x)
+    {
+        return (float)System.Math.Round(x, System.MidpointRounding.AwayFromZero) / 2f;
     }
 }
