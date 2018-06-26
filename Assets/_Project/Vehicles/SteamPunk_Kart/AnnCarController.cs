@@ -12,6 +12,7 @@ public class AnnCarController : CarController
     // translation, rotation see parent class.
 
     [SerializeField] private int epochs = 1000;
+    [SerializeField] private string dataSetFileName = "TrainingData.txt";
 
     private bool trainingDone = false;
     private float trainingProgress = 0;
@@ -37,6 +38,8 @@ public class AnnCarController : CarController
 
     private IEnumerator LoadTrainingSet ()
     {
+        string filePath = Application.dataPath + "/_Project/ANN/" + dataSetFileName;
+        string trainingSet;
         //TODO: Implementation...
 
         yield return 0;

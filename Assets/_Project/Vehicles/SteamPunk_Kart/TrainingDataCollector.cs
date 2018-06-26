@@ -7,8 +7,9 @@ using UnityEngine.Assertions;
 [RequireComponent( typeof(CarController), typeof(Vision) )]
 public class TrainingDataCollector : MonoBehaviour 
 {
-    private StreamWriter trainingDataFile;
-    private List<string> collectedTrainingData = new List<string>();
+    private StreamWriter dataSetFile;
+    // The collection of instances of (training) data.
+    private List<string> dataSet = new List<string>();
     private Vision vision;
     private CarController carController;
 
@@ -22,12 +23,13 @@ public class TrainingDataCollector : MonoBehaviour
         Assert.IsNotNull(carController);
 
         string path = Application.dataPath + "/_Project/ANN/TrainingData.txt";
-        trainingDataFile = File.CreateText(path);
+        dataSetFile = File.CreateText(path);
 	}
 
     private void LateUpdate ()
     {
-        string trainingSet = null;
+        // A row of data.
+        string instance = null;
 
         for (int i = 0; i < vision.HitDistances.Length; i++)
         {
@@ -36,25 +38,25 @@ public class TrainingDataCollector : MonoBehaviour
             // in order to make neurons react more to short distances.
             float hitDistanceRounded = 1 - RoundToPointFive(vision.HitDistances[i]);
 
-            trainingSet += hitDistanceRounded + ",";
+            instance += hitDistanceRounded + ",";
         }
 
-        trainingSet += RoundToPointFive(carController.TranslationInput) + "," + RoundToPointFive(carController.RotationInput);
+        instance += RoundToPointFive(carController.TranslationInput) + "," + RoundToPointFive(carController.RotationInput);
 
         // Collect only new training data.
-        if (!collectedTrainingData.Contains(trainingSet))
+        if (!dataSet.Contains(instance))
         {
-            collectedTrainingData.Add(trainingSet);
+            dataSet.Add(instance);
         }
     }
 
     private void OnApplicationQuit ()
     {
-        foreach (var trainingSet in collectedTrainingData)
+        foreach (var trainingSet in dataSet)
         {
-            trainingDataFile.WriteLine(trainingSet);
+            dataSetFile.WriteLine(trainingSet);
         }
-        trainingDataFile.Close();
+        dataSetFile.Close();
     }
 
     /// <summary>
