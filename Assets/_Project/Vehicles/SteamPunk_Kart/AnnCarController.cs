@@ -117,4 +117,27 @@ public class AnnCarController : CarController
         trainingDone = true;
     }
 
+    /// <summary>
+    /// Maps a value from an original range to a new range.
+    /// </summary>
+    /// <returns></returns>
+    private float Map (float newFrom, float newTo, float originalFrom, float originalTo, float value)
+    {
+        if (value <= originalFrom)
+            return newFrom;
+        else if (value >= originalTo)
+            return newTo;
+        //TODO: See if * and + in next line were transcribed correctly from video.
+        return (newTo - newFrom) * ((value - originalFrom) / (originalTo - originalFrom)) + newFrom;
+    }
+
+    /// <summary>
+    /// Round to the nearest .5 value.
+    /// </summary>
+    /// <param name="x"> Value to round. </param>
+    /// <returns> Value rounded to nearest .5. </returns>
+    private float RoundToPointFive (float x)
+    {
+        return (float)System.Math.Round(x, System.MidpointRounding.AwayFromZero) / 2f;
+    }
 }
