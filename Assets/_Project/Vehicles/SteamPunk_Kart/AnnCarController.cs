@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.UI;
 
 
 public class AnnCarController : CarController 
@@ -17,13 +18,27 @@ public class AnnCarController : CarController
     private double sumSquaredError = 0;
     private double lastSumSquaredError = 1;
     private ANN ann;
+    private Text[] debugTexts;
 
     // Use this for initialization
     private void Start () 
 	{
         ann = new ANN(5, 2, 1, 10, 0.5);
+        StartCoroutine(LoadTrainingSet());
 
+        debugTexts = GameObject.Find("DebugTexts").GetComponentsInChildren<Text>();
+        Assert.IsNotNull(debugTexts);
+
+        // Might have to go into Update().
+        debugTexts[0].text = "SSE: " + lastSumSquaredError;
+        debugTexts[1].text = "Alpha: " + ann.alpha;
+        debugTexts[2].text = "Trained: " + trainingProgress;
     }
 
-    //TODO: Is the inherited Update() automatically called?
+    private IEnumerator LoadTrainingSet ()
+    {
+        //TODO: Implementation...
+
+        yield return 0;
+    }
 }
