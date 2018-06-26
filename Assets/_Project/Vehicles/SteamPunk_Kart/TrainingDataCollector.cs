@@ -28,9 +28,10 @@ public class TrainingDataCollector : MonoBehaviour
 
     private void LateUpdate ()
     {
-        // A row of data.
+        // A row of data in the training set.
         string instance = null;
 
+        // Store hitDistances from raycasts as comma-separated features in the instance.
         for (int i = 0; i < vision.HitDistances.Length; i++)
         {
             // Make short distances have big values (towards 1) 
@@ -41,6 +42,7 @@ public class TrainingDataCollector : MonoBehaviour
             instance += hitDistanceRounded + ",";
         }
 
+        // Append rounded user input as comma-separated features to the instance.
         instance += RoundToPointFive(carController.TranslationInput) + "," + RoundToPointFive(carController.RotationInput);
 
         // Collect only new training data.
