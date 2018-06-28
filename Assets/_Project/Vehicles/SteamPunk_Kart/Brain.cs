@@ -130,35 +130,22 @@ public class Brain : MonoBehaviour
         trainingDone = true;
     }
 
-
-
     private void Update ()
     {
         if (!trainingDone) return;
 
-        // TODO: Ensure execution order of raycasts, action calculation and control execution (boolean flags???)!
-        #region #1 Calculate raycasts
-        vision.CastRays();
+        List<double> inputs = GetInputsFromRaycasts();
 
-        // Gets and stores distances from raycasts as inputs.
-        var inputs = new List<double>();
-        for (var i = 0; i < vision.ProcessedHitDistances.Length; i++)
-        {
-            inputs.Add(vision.ProcessedHitDistances[i]);
-        }
-
-        // TODO: Refactor: Not functional here, but needs to be provided to the Ann.cs code.
-        // Sets some value to desiredOutputs.
+        // TODO: Refactor: Not functional here, but some values need to be passed to Ann.CalcOutput().
         var desiredOutputs = new List<double> { 0, 0 };
-        #endregion
 
-        #region #2 Calculate outputs
-        // Calculate outputs without updating weight values as opposed to Train().
-        var calculatedOutputs = new List<double>();
-        calculatedOutputs = ann.CalcOutput(inputs, desiredOutputs);
-        #endregion
+        List<double> calculatedOutputs = CalculateOutputs(inputs, desiredOutputs);
 
-        #region #3 Control car
+        ControlCar(calculatedOutputs);
+    }
+
+    private void ControlCar (List<double> calculatedOutputs)
+    {
         // Map back from normalized values to GetAxis()-compatible controller values.
         float translationInput = Helpers.Map(-1, 1, 0, 1, (float)calculatedOutputs[0]);
         float rotationInput = Helpers.Map(-1, 1, 0, 1, (float)calculatedOutputs[1]);
@@ -168,7 +155,29 @@ public class Brain : MonoBehaviour
         Debug.LogFormat("Frame {0} - {1}: Input values set in CarController.", Time.frameCount, this);
 
         carController.MoveCar();
-        #endregion
+    }
+
+    /// <summary>
+    /// Calculate outputs without updating weight values as opposed to Train().
+    /// </summary>
+    private List<double> CalculateOutputs (List<double> inputs, List<double> desiredOutputs)
+    {
+        var calculatedOutputs = new List<double>();
+        calculatedOutputs = ann.CalcOutput(inputs, desiredOutputs);
+        return calculatedOutputs;
+    }
+
+    private List<double> GetInputsFromRaycasts ()
+    {
+        vision.CastRays();
+
+        var inputs = new List<double>();
+        for (var i = 0; i < vision.ProcessedHitDistances.Length; i++)
+        {
+            inputs.Add(vision.ProcessedHitDistances[i]);
+        }
+
+        return inputs;
     }
 
     private void OnGUI ()
