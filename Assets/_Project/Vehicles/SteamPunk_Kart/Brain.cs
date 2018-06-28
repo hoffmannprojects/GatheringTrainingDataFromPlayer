@@ -8,10 +8,6 @@ using UnityEngine.UI;
 [RequireComponent (typeof (Vision))]
 public class Brain : MonoBehaviour 
 {
-    // TODO: VisibleDistance see Vision.cs
-    // TODO: speed & rotationSpeed are inherited.
-    // TODO: translation, rotation see parent class.
-
     [SerializeField] private int epochs = 1000;
     [SerializeField] private string dataSetFileName = "TrainingData.txt";
 
@@ -53,13 +49,15 @@ public class Brain : MonoBehaviour
 
         if (File.Exists(dataSetFilePath))
         {
+            Debug.Log("Training data file found at: " + dataSetFilePath);
+
             int instanceCount = File.ReadAllLines(dataSetFilePath).Length;
             StreamReader dataSetFile = File.OpenText(dataSetFilePath);
             var calculatedOutputs = new List<double>();
             var inputs = new List<double>();
             var desiredOutputs = new List<double>();
 
-            for (int i = 0; i < epochs; i++)
+            for (var i = 0; i < epochs; i++)
             {
                 sumSquaredError = 0;
 
@@ -110,7 +108,7 @@ public class Brain : MonoBehaviour
                     sumSquaredError += thisError;
                 }
                 // Percentage value.
-                trainingProgress = i / epochs;
+                trainingProgress = (float)i / (float)epochs;
 
                 // Calculate average sumOfSquaredErrors.
                 sumSquaredError /= instanceCount;
@@ -119,6 +117,10 @@ public class Brain : MonoBehaviour
 
                 yield return null;
             }
+        }
+        else
+        {
+            Debug.LogError("No training data file found at: " + dataSetFilePath);
         }
         trainingDone = true;
     }
@@ -158,9 +160,7 @@ public class Brain : MonoBehaviour
         }
 
         // TODO: Refactor: Not functional here, but needs to be provided to the Ann.cs code.
-        var desiredOutputs = new List<double>();
-        desiredOutputs.Add(0);
-        desiredOutputs.Add(0);
+        var desiredOutputs = new List<double> { 0, 0 };
 
         var calculatedOutputs = new List<double>();
         // Calculates outputs without updating weight values as opposed to Train().
@@ -180,6 +180,6 @@ public class Brain : MonoBehaviour
         // Update DebugTexts.
         debugTexts[0].text = "SSE: " + lastSumSquaredError;
         debugTexts[1].text = "Alpha: " + ann.alpha;
-        debugTexts[2].text = "Trained: " + trainingProgress;
+        debugTexts[2].text = "Trained: " + trainingProgress.ToString("P");
     }
 }
