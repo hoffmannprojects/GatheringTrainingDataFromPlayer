@@ -49,7 +49,7 @@ public class Brain : MonoBehaviour
 
         if (File.Exists(dataSetFilePath))
         {
-            Debug.Log("Training data file found at: " + dataSetFilePath);
+            Debug.Log("Using training data file found at: " + dataSetFilePath);
 
             int instanceCount = File.ReadAllLines(dataSetFilePath).Length;
             StreamReader dataSetFile = File.OpenText(dataSetFilePath);
@@ -92,7 +92,7 @@ public class Brain : MonoBehaviour
                         // Assign the remaining two features (user input) to outputs.
                         for (int j = 5; j < 7; j++)
                         {
-                            double output = Map(0, 1, -1, 1, System.Convert.ToSingle(features[j]));
+                            double output = Helpers.Map(0, 1, -1, 1, System.Convert.ToSingle(features[j]));
                             desiredOutputs.Add(output);
                         }
 
@@ -125,38 +125,16 @@ public class Brain : MonoBehaviour
         trainingDone = true;
     }
 
-    /// <summary>
-    /// Maps a value from an original range to a new range.
-    /// </summary>
-    /// <returns></returns>
-    private float Map (float newFrom, float newTo, float originalFrom, float originalTo, float value)
-    {
-        if (value <= originalFrom)
-            return newFrom;
-        else if (value >= originalTo)
-            return newTo;
-        //TODO: See if * and + in next line were transcribed correctly from video.
-        return (newTo - newFrom) * ((value - originalFrom) / (originalTo - originalFrom)) + newFrom;
-    }
 
-    /// <summary>
-    /// Round to the nearest .5 value.
-    /// </summary>
-    /// <param name="x"> Value to round. </param>
-    /// <returns> Value rounded to nearest .5. </returns>
-    private float RoundToPointFive (float x)
-    {
-        return (float)System.Math.Round(x, System.MidpointRounding.AwayFromZero) / 2f;
-    }
 
     private void Update ()
     {
         if (!trainingDone) return;
 
         var inputs = new List<double>();
-        for (var i = 0; i < vision.HitDistances.Length; i++)
+        for (var i = 0; i < vision.ProcessedHitDistances.Length; i++)
         {
-            inputs.Add(vision.HitDistances[i]);
+            inputs.Add(vision.ProcessedHitDistances[i]);
         }
 
         // TODO: Refactor: Not functional here, but needs to be provided to the Ann.cs code.
@@ -167,8 +145,8 @@ public class Brain : MonoBehaviour
         calculatedOutputs = ann.CalcOutput(inputs, desiredOutputs);
 
         // Map back from normalized values to GetAxis()-compatible controller values.
-        float translationInput = Map(-1, 1, 0, 1, (float)calculatedOutputs[0]);
-        float rotationInput = Map(-1, 1, 0, 1, (float)calculatedOutputs[1]);
+        float translationInput = Helpers.Map(-1, 1, 0, 1, (float)calculatedOutputs[0]);
+        float rotationInput = Helpers.Map(-1, 1, 0, 1, (float)calculatedOutputs[1]);
 
         carController.TranslationInput = translationInput;
         carController.RotationInput = rotationInput;

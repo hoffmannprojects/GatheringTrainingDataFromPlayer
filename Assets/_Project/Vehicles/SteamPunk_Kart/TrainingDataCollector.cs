@@ -28,22 +28,24 @@ public class TrainingDataCollector : MonoBehaviour
 
     private void LateUpdate ()
     {
-        // A row of data in the training set.
+        CollectNewInstance();
+    }
+
+    /// <summary>
+    /// Collects a new Instance (row of data) with features (columns of data) in the training set, if data is new.
+    /// </summary>
+    private void CollectNewInstance ()
+    {
         string instance = null;
 
-        // Store hitDistances from raycasts as comma-separated features in the instance.
-        for (int i = 0; i < vision.HitDistances.Length; i++)
+        // Collect ProcessedhitDistances from raycasts as features.
+        for (int i = 0; i < vision.ProcessedHitDistances.Length; i++)
         {
-            // Make short distances have big values (towards 1) 
-            // and long distances have small values (towards 0)
-            // in order to make neurons react more to short distances.
-            float hitDistanceRounded = 1 - RoundToPointFive(vision.HitDistances[i]);
-
-            instance += hitDistanceRounded + ",";
+            instance += vision.ProcessedHitDistances[i] + ",";
         }
 
-        // Append rounded user input as comma-separated features to the instance.
-        instance += RoundToPointFive(carController.TranslationInput) + "," + RoundToPointFive(carController.RotationInput);
+        // Append rounded user input as features.
+        instance += Helpers.RoundToPointFive(carController.TranslationInput) + "," + Helpers.RoundToPointFive(carController.RotationInput);
 
         // Collect only new training data.
         if (!dataSet.Contains(instance))
@@ -54,20 +56,15 @@ public class TrainingDataCollector : MonoBehaviour
 
     private void OnApplicationQuit ()
     {
-        foreach (var trainingSet in dataSet)
-        {
-            dataSetFile.WriteLine(trainingSet);
-        }
-        dataSetFile.Close();
+        WriteDataSetToFileAndClose();
     }
 
-    /// <summary>
-    /// Round to the nearest .5 value.
-    /// </summary>
-    /// <param name="x"></param>
-    /// <returns></returns>
-    private float RoundToPointFive (float x)
+    private void WriteDataSetToFileAndClose ()
     {
-        return (float)System.Math.Round(x, System.MidpointRounding.AwayFromZero) / 2f;
+        foreach (var instance in dataSet)
+        {
+            dataSetFile.WriteLine(instance);
+        }
+        dataSetFile.Close();
     }
 }

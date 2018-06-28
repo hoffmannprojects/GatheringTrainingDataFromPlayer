@@ -12,7 +12,7 @@ public class Vision : MonoBehaviour
     #endregion
 
     #region PROPERTIES
-    public float[] HitDistances { get; private set; } = new float[rayCount];
+    public float[] ProcessedHitDistances { get; private set; } = new float[rayCount];
     #endregion  
 	
 	// Update is called once per frame
@@ -39,16 +39,17 @@ public class Vision : MonoBehaviour
         {
             Debug.DrawRay(transform.position, nextRayDirection * visibleDistance, rayColors[i]);
 
-            HitDistances[i] = 0;
+            ProcessedHitDistances[i] = 0;
 
             if (Physics.Raycast(transform.position, nextRayDirection, out hits[i], visibleDistance))
             {
-                // Important!:
                 // Normalize to a range between 0 and 1.
-                // TODO: Check that training inputs and controlling inputs are calculated exactly the same way.
                 var normalizedHitDistance = hits[i].distance / visibleDistance;
 
-                HitDistances[i] = normalizedHitDistance;
+                // Make short distances have big values (towards 1) 
+                // and long distances have small values (towards 0)
+                // in order to make neurons react more to short distances.
+                ProcessedHitDistances[i] = 1 - Helpers.RoundToPointFive(normalizedHitDistance);
             }
             nextRayDirection = Quaternion.AngleAxis(angleStepSize, Vector3.up) * nextRayDirection;
         }
