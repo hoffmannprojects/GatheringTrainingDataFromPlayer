@@ -7,11 +7,12 @@ using UnityEngine.Assertions;
 [RequireComponent( typeof(CarController), typeof(Vision) )]
 public class TrainingDataCollector : MonoBehaviour 
 {
-    private StreamWriter dataSetFile;
+    private StreamWriter dataSetFile = null;
     // The collection of instances of (training) data.
     private List<string> dataSet = new List<string>();
     private Vision vision;
     private CarController carController;
+    private string filePath = null;
 
 	// Use this for initialization
 	private void Start () 
@@ -22,8 +23,16 @@ public class TrainingDataCollector : MonoBehaviour
         carController = GetComponent<CarController>();
         Assert.IsNotNull(carController);
 
-        string path = Application.dataPath + "/_Project/ANN/TrainingData.txt";
-        dataSetFile = File.CreateText(path);
+        filePath = Application.dataPath + "/_Project/ANN/TrainingData.txt";
+        // Protect against overwrating an existing file.
+        if (!File.Exists(filePath))
+        {
+            dataSetFile = File.CreateText(filePath);
+        }
+        else
+        {
+            Debug.LogWarning("Data set file already exists. Rename or delete before recording new training data.");
+        }
 	}
 
     private void LateUpdate ()
@@ -61,10 +70,18 @@ public class TrainingDataCollector : MonoBehaviour
 
     private void WriteDataSetToFileAndClose ()
     {
-        foreach (var instance in dataSet)
+        if (dataSetFile != null)
         {
-            dataSetFile.WriteLine(instance);
+            foreach (var instance in dataSet)
+            {
+                dataSetFile.WriteLine(instance);
+            }
+            dataSetFile.Close();
+            Debug.Log("New training data written to file.");
         }
-        dataSetFile.Close();
+        else
+        {
+            Debug.LogWarning("No data has been written to file.");
+        }
     }
 }
