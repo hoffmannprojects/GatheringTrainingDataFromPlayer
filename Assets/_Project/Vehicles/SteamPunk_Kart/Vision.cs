@@ -6,8 +6,10 @@ using UnityEngine.Assertions;
 
 public class Vision : MonoBehaviour 
 {
+    #region FIELDS
     [SerializeField] private float visibleDistance = 200f;
-    private const int rayCount = 5;
+    private const int rayCount = 5; 
+    #endregion
 
     #region PROPERTIES
     public float[] HitDistances { get; private set; } = new float[rayCount];

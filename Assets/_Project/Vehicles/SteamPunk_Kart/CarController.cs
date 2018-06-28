@@ -10,9 +10,8 @@ public class CarController : MonoBehaviour
     [SerializeField] private float rotationSpeed = 100.0F;
 
     #region PROPERTIES
-    public float TranslationInput { get; private set; } = 0;
-    public float RotationInput { get; private set; } = 0;
-
+    public float TranslationInput { get; set; } = 0;
+    public float RotationInput { get; set; } = 0;
     public float Speed
     {
         get
@@ -25,7 +24,6 @@ public class CarController : MonoBehaviour
             speed = value;
         }
     }
-
     public float RotationSpeed
     {
         get
@@ -38,12 +36,22 @@ public class CarController : MonoBehaviour
             rotationSpeed = value;
         }
     }
+    public bool ControlledByBrain { get; set; } = false;
     #endregion
+
+    private void Start ()
+    {
+        ControlledByBrain = GetComponent<Brain>() ? true : false;
+        if (ControlledByBrain) Debug.Log("Controlled by Brain. User control disabled.");
+    }
 
     protected void Update ()
     {
-        TranslationInput = Input.GetAxis("Vertical");
-        RotationInput = Input.GetAxis("Horizontal");
+        if (!ControlledByBrain)
+        {
+            TranslationInput = Input.GetAxis("Vertical");
+            RotationInput = Input.GetAxis("Horizontal");
+        }
         float translation = TranslationInput * Speed * Time.deltaTime;
         float rotation = RotationInput * RotationSpeed * Time.deltaTime;
         transform.Translate(0, 0, translation);

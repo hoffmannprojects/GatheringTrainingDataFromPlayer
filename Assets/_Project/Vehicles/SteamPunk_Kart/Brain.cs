@@ -22,6 +22,7 @@ public class Brain : MonoBehaviour
     private ANN ann;
     private Text[] debugTexts;
     private Vision vision;
+    private CarController carController;
 
     // Use this for initialization
     private void Start () 
@@ -35,10 +36,8 @@ public class Brain : MonoBehaviour
         vision = GetComponent<Vision>();
         Assert.IsNotNull(vision);
 
-        // Might have to go into Update().
-        debugTexts[0].text = "SSE: " + lastSumSquaredError;
-        debugTexts[1].text = "Alpha: " + ann.alpha;
-        debugTexts[2].text = "Trained: " + trainingProgress;
+        carController = GetComponent<CarController>();
+        Assert.IsNotNull(carController);
     }
 
     /// <summary>
@@ -171,6 +170,16 @@ public class Brain : MonoBehaviour
         float translationInput = Map(-1, 1, 0, 1, (float)calculatedOutputs[0]);
         float rotationInput = Map(-1, 1, 0, 1, (float)calculatedOutputs[1]);
 
-        // TODO: Set translationInput and rotationInput as the new inputs for CarController (interface?)
+        carController.TranslationInput = translationInput;
+        carController.RotationInput = rotationInput;
+
+    }
+
+    private void OnGUI ()
+    {
+        // Update DebugTexts.
+        debugTexts[0].text = "SSE: " + lastSumSquaredError;
+        debugTexts[1].text = "Alpha: " + ann.alpha;
+        debugTexts[2].text = "Trained: " + trainingProgress;
     }
 }

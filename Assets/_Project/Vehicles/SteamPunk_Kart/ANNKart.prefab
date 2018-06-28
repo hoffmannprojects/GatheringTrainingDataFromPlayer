@@ -1277,6 +1277,7 @@ GameObject:
   - component: {fileID: 4366573389399552}
   - component: {fileID: 114296812348554124}
   - component: {fileID: 114470641734760480}
+  - component: {fileID: 114761134995229922}
   m_Layer: 0
   m_Name: ANNKart
   m_TagString: Untagged
@@ -5113,9 +5114,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 176d5566191e6fd438c46892c1708c90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 100
-  rotationSpeed: 100
   epochs: 1000
+  dataSetFileName: TrainingData.txt
 --- !u!114 &114470641734760480
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5128,6 +5128,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibleDistance: 200
+--- !u!114 &114761134995229922
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1870020173455780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 114203c87213fc44bb59d3615f48dc4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 100
+  rotationSpeed: 100
 --- !u!137 &137335398612714566
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
