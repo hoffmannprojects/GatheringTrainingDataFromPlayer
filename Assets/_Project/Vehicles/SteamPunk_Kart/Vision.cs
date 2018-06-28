@@ -33,7 +33,7 @@ public class Vision : MonoBehaviour
         var rayColors = new Color[] { Color.green, Color.cyan, Color.blue, Color.yellow, Color.red };
 
         // Cast rays in angleStepSize degree steps.
-        for (int i = 0; i < hits.Length; i++)
+        for (var i = 0; i < hits.Length; i++)
         {
             Debug.DrawRay(transform.position, nextRayDirection * visibleDistance, rayColors[i]);
 
@@ -41,8 +41,9 @@ public class Vision : MonoBehaviour
 
             if (Physics.Raycast(transform.position, nextRayDirection, out hits[i], visibleDistance))
             {
-                // Importandt!:
+                // Important!:
                 // Normalize to a range between 0 and 1.
+                // TODO: Check that training inputs and controlling inputs are calculated exactly the same way.
                 var normalizedHitDistance = hits[i].distance / visibleDistance;
 
                 HitDistances[i] = normalizedHitDistance;

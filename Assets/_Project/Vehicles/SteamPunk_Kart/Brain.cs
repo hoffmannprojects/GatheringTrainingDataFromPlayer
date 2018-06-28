@@ -5,13 +5,12 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
 
-//TODO: Can the inheritance be avoided and instead a regular CarController used separately?
-// This would become a Brain class?
-public class AnnCarController : CarController 
+[RequireComponent (typeof (Vision))]
+public class Brain : MonoBehaviour 
 {
-    // VisibleDistance see Vision.cs
-    // speed & rotationSpeed are inherited.
-    // translation, rotation see parent class.
+    // TODO: VisibleDistance see Vision.cs
+    // TODO: speed & rotationSpeed are inherited.
+    // TODO: translation, rotation see parent class.
 
     [SerializeField] private int epochs = 1000;
     [SerializeField] private string dataSetFileName = "TrainingData.txt";
@@ -22,6 +21,7 @@ public class AnnCarController : CarController
     private double lastSumSquaredError = 1;
     private ANN ann;
     private Text[] debugTexts;
+    private Vision vision;
 
     // Use this for initialization
     private void Start () 
@@ -32,12 +32,19 @@ public class AnnCarController : CarController
         debugTexts = GameObject.Find("DebugTexts").GetComponentsInChildren<Text>();
         Assert.IsNotNull(debugTexts);
 
+        vision = GetComponent<Vision>();
+        Assert.IsNotNull(vision);
+
         // Might have to go into Update().
         debugTexts[0].text = "SSE: " + lastSumSquaredError;
         debugTexts[1].text = "Alpha: " + ann.alpha;
         debugTexts[2].text = "Trained: " + trainingProgress;
     }
 
+    /// <summary>
+    /// Loads the training dataset.
+    /// </summary>
+    /// <returns> null (Coroutine). </returns>
     private IEnumerator LoadTrainingSet ()
     {
         string dataSetFilePath = Application.dataPath + "/_Project/ANN/" + dataSetFileName;
@@ -78,6 +85,7 @@ public class AnnCarController : CarController
                         inputs.Clear();
                         desiredOutputs.Clear();
 
+                        // TODO: Check that training data and inputs are calculated the same (rounding, normalizing, etc.).
                         // Assign the first five features (raycast distances) to inputs.
                         for (int j = 0; j < 5; j++)
                         {
@@ -87,7 +95,6 @@ public class AnnCarController : CarController
                         // Assign the remaining two features (user input) to outputs.
                         for (int j = 5; j < 7; j++)
                         {
-                            //TODO: Where is Map() defined???
                             double output = Map(0, 1, -1, 1, System.Convert.ToSingle(features[j]));
                             desiredOutputs.Add(output);
                         }
@@ -139,5 +146,31 @@ public class AnnCarController : CarController
     private float RoundToPointFive (float x)
     {
         return (float)System.Math.Round(x, System.MidpointRounding.AwayFromZero) / 2f;
+    }
+
+    private void Update ()
+    {
+        if (!trainingDone) return;
+
+        var inputs = new List<double>();
+        for (var i = 0; i < vision.HitDistances.Length; i++)
+        {
+            inputs.Add(vision.HitDistances[i]);
+        }
+
+        // TODO: Refactor: Not functional here, but needs to be provided to the Ann.cs code.
+        var desiredOutputs = new List<double>();
+        desiredOutputs.Add(0);
+        desiredOutputs.Add(0);
+
+        var calculatedOutputs = new List<double>();
+        // Calculates outputs without updating weight values as opposed to Train().
+        calculatedOutputs = ann.CalcOutput(inputs, desiredOutputs);
+
+        // Map back from normalized values to GetAxis()-compatible controller values.
+        float translationInput = Map(-1, 1, 0, 1, (float)calculatedOutputs[0]);
+        float rotationInput = Map(-1, 1, 0, 1, (float)calculatedOutputs[1]);
+
+        // TODO: Set translationInput and rotationInput as the new inputs for CarController (interface?)
     }
 }

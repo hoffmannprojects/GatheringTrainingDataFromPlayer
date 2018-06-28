@@ -44,6 +44,12 @@ public class ANN{
 		return outputValues;
 	}
 
+    /// <summary>
+    /// Calculates outputs without training and adjusting weight values.
+    /// </summary>
+    /// <param name="inputValues"></param>
+    /// <param name="desiredOutput"></param>
+    /// <returns></returns>
 	public List<double> CalcOutput(List<double> inputValues, List<double> desiredOutput)
 	{
 		List<double> inputs = new List<double>();
