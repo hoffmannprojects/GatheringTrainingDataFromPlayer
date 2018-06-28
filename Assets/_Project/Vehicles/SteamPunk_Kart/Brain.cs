@@ -68,7 +68,9 @@ public class Brain : MonoBehaviour
 
                 // Set file pointer to beginning of file.
                 dataSetFile.BaseStream.Position = 0;
-                // TODO: Solution assigns local var currentWeights to ann.PrintWeights() here.
+
+                string currentWeights = ann.PrintWeights();
+
                 // Read one instance (line) at a time until the end of the dataSet.
                 while ((instance = dataSetFile.ReadLine()) != null)
                 {
@@ -81,7 +83,7 @@ public class Brain : MonoBehaviour
 
                     // Ignore instances, where no user input was recorded.
                     // They provide no useful information.
-                    if (System.Convert.ToDouble(features[5]) != 0 
+                    if (System.Convert.ToDouble(features[5]) != 0
                         && System.Convert.ToDouble(features[6]) != 0)
                     {
                         inputs.Clear();
@@ -118,7 +120,7 @@ public class Brain : MonoBehaviour
                 // Calculate average sumOfSquaredErrors.
                 sumSquaredError /= instanceCount;
 
-                lastSumSquaredError = sumSquaredError;
+                AdaptLearning(currentWeights);
 
                 yield return null;
             }
@@ -128,6 +130,31 @@ public class Brain : MonoBehaviour
             Debug.LogError("No training data file found at: " + dataSetFilePath);
         }
         trainingDone = true;
+    }
+
+    /// <summary>
+    /// Adapts alpha value of the Neural Network dynamically. 
+    /// Discards the current iteration's results if no improvement was made.
+    /// </summary>
+    /// <param name="currentWeights"> The weights to be re-loaded, if no improvement was made. </param>
+    private void AdaptLearning (string currentWeights)
+    {
+        if (lastSumSquaredError < sumSquaredError)
+        {
+            // SumSquaredError hasn't improved over lastSumquaredError.
+
+            ann.LoadWeights(currentWeights);
+            // Decrease alpha.
+            ann.alpha = Mathf.Clamp((float)ann.alpha - 0.001f, 0.01f, 0.9f);
+        }
+        else
+        {
+            // SumSquaredError has improved.
+
+            // Increase alpha.
+            ann.alpha = Mathf.Clamp((float)ann.alpha + 0.001f, 0.01f, 0.9f);
+            lastSumSquaredError = sumSquaredError;
+        }
     }
 
     private void Update ()

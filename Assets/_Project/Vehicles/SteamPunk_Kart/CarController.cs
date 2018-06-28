@@ -6,8 +6,8 @@ using UnityEngine.Assertions;
 
 public class CarController : MonoBehaviour 
 {
-    [SerializeField] private float speed = 100f;
-    [SerializeField] private float rotationSpeed = 100.0F;
+    private float speed = 60f;
+    private float rotationSpeed = 100.0F;
 
     #region PROPERTIES
     public float TranslationInput { get; set; } = 0;

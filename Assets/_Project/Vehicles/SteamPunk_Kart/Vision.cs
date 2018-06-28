@@ -7,7 +7,7 @@ using UnityEngine.Assertions;
 public class Vision : MonoBehaviour 
 {
     #region FIELDS
-    [SerializeField] private float visibleDistance = 200f;
+    private float visibleDistance = 200f;
     private const int rayCount = 5; 
     #endregion
 
