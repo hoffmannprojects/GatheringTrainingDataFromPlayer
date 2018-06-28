@@ -10,6 +10,7 @@ public class Brain : MonoBehaviour
 {
     [SerializeField] private int epochs = 1000;
     [SerializeField] private string dataSetFileName = "TrainingData.txt";
+    [SerializeField] private bool loadWeightsFromFile = false;
 
     private bool trainingDone = false;
     private float trainingProgress = 0;
@@ -26,7 +27,15 @@ public class Brain : MonoBehaviour
         InitializeReferences();
 
         ann = new ANN(5, 2, 1, 10, 0.05);
-        StartCoroutine(LoadTrainingSet());
+
+        if (loadWeightsFromFile)
+        {
+            trainingDone = true;
+        }
+        else
+        {
+            StartCoroutine(LoadTrainingSet());
+        }
     }
 
     private void InitializeReferences ()
