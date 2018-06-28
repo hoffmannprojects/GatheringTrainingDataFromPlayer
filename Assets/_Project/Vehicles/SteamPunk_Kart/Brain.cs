@@ -21,11 +21,16 @@ public class Brain : MonoBehaviour
     private CarController carController;
 
     // Use this for initialization
-    private void Start () 
-	{
-        ann = new ANN(5, 2, 1, 10, 0.5);
-        StartCoroutine(LoadTrainingSet());
+    private void Start ()
+    {
+        InitializeReferences();
 
+        ann = new ANN(5, 2, 1, 10, 0.05);
+        StartCoroutine(LoadTrainingSet());
+    }
+
+    private void InitializeReferences ()
+    {
         debugTexts = GameObject.Find("DebugTexts").GetComponentsInChildren<Text>();
         Assert.IsNotNull(debugTexts);
 
@@ -61,9 +66,9 @@ public class Brain : MonoBehaviour
             {
                 sumSquaredError = 0;
 
-                // Set file pointer to beginning of file whenn looping through epochs.
+                // Set file pointer to beginning of file.
                 dataSetFile.BaseStream.Position = 0;
-
+                // TODO: Solution assigns local var currentWeights to ann.PrintWeights() here.
                 // Read one instance (line) at a time until the end of the dataSet.
                 while ((instance = dataSetFile.ReadLine()) != null)
                 {
@@ -82,14 +87,14 @@ public class Brain : MonoBehaviour
                         inputs.Clear();
                         desiredOutputs.Clear();
 
-                        // TODO: Check that training data and inputs are calculated the same (rounding, normalizing, etc.).
+                        // TODO: Check that training data and inputs are calculated the same way (rounding, normalizing, etc.).
                         // Assign the first five features (raycast distances) to inputs.
                         for (int j = 0; j < 5; j++)
                         {
                             inputs.Add(System.Convert.ToDouble(features[j]));
                         }
 
-                        // Assign the remaining two features (user input) to outputs.
+                        // Assigns the remaining two features (user input) to outputs.
                         for (int j = 5; j < 7; j++)
                         {
                             double output = Helpers.Map(0, 1, -1, 1, System.Convert.ToSingle(features[j]));
@@ -131,6 +136,11 @@ public class Brain : MonoBehaviour
     {
         if (!trainingDone) return;
 
+        // TODO: Ensure execution order of raycasts, action calculation and control execution (boolean flags???)!
+        #region #1 Calculate raycasts
+        vision.CastRays();
+
+        // Gets and stores distances from raycasts as inputs.
         var inputs = new List<double>();
         for (var i = 0; i < vision.ProcessedHitDistances.Length; i++)
         {
@@ -138,19 +148,27 @@ public class Brain : MonoBehaviour
         }
 
         // TODO: Refactor: Not functional here, but needs to be provided to the Ann.cs code.
+        // Sets some value to desiredOutputs.
         var desiredOutputs = new List<double> { 0, 0 };
+        #endregion
 
+        #region #2 Calculate outputs
+        // Calculate outputs without updating weight values as opposed to Train().
         var calculatedOutputs = new List<double>();
-        // Calculates outputs without updating weight values as opposed to Train().
         calculatedOutputs = ann.CalcOutput(inputs, desiredOutputs);
+        #endregion
 
+        #region #3 Control car
         // Map back from normalized values to GetAxis()-compatible controller values.
         float translationInput = Helpers.Map(-1, 1, 0, 1, (float)calculatedOutputs[0]);
         float rotationInput = Helpers.Map(-1, 1, 0, 1, (float)calculatedOutputs[1]);
 
         carController.TranslationInput = translationInput;
         carController.RotationInput = rotationInput;
+        Debug.LogFormat("Frame {0} - {1}: Input values set in CarController.", Time.frameCount, this);
 
+        carController.MoveCar();
+        #endregion
     }
 
     private void OnGUI ()

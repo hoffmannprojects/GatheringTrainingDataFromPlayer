@@ -13,19 +13,29 @@ public class Vision : MonoBehaviour
 
     #region PROPERTIES
     public float[] ProcessedHitDistances { get; private set; } = new float[rayCount];
-    #endregion  
-	
-	// Update is called once per frame
-	void Update ()
+    public bool ControlledByBrain { get; private set; } = false;
+    #endregion
+
+    private void Awake ()
     {
-        CastRays();
+        ControlledByBrain = GetComponent<Brain>() ? true : false;
+        if (ControlledByBrain) Debug.Log("Controlled by Brain. Raycasting in Update() disabled.");
+    }
+
+    // Update is called once per frame
+    void Update ()
+    {
+        if (!ControlledByBrain)
+        {
+            CastRays();
+        }
     }
 
     /// <summary>
     /// Rays are being cast in constant steps starting from the left vector [0].
     /// Resulting hits are stored in an array.
     /// </summary>
-    private void CastRays ()
+    public void CastRays ()
     {
         // Direction of the first raycast.
         var nextRayDirection = -transform.right;
@@ -53,5 +63,6 @@ public class Vision : MonoBehaviour
             }
             nextRayDirection = Quaternion.AngleAxis(angleStepSize, Vector3.up) * nextRayDirection;
         }
+        Debug.LogFormat("Frame {0} - {1}: Raycasts executed.", Time.frameCount, this);
     }
 }

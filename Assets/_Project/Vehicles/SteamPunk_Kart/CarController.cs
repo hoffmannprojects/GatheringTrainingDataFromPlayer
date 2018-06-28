@@ -36,10 +36,10 @@ public class CarController : MonoBehaviour
             rotationSpeed = value;
         }
     }
-    public bool ControlledByBrain { get; set; } = false;
+    public bool ControlledByBrain { get; private set; } = false;
     #endregion
 
-    private void Start ()
+    private void Awake ()
     {
         ControlledByBrain = GetComponent<Brain>() ? true : false;
         if (ControlledByBrain) Debug.Log("Controlled by Brain. User control disabled.");
@@ -51,10 +51,19 @@ public class CarController : MonoBehaviour
         {
             TranslationInput = Input.GetAxis("Vertical");
             RotationInput = Input.GetAxis("Horizontal");
+
+            MoveCar();
         }
+    }
+
+    public void MoveCar ()
+    {
+        Debug.LogFormat("Frame {0} - {1}: Reading input.", Time.frameCount, this);
         float translation = TranslationInput * Speed * Time.deltaTime;
         float rotation = RotationInput * RotationSpeed * Time.deltaTime;
+
         transform.Translate(0, 0, translation);
         transform.Rotate(0, rotation, 0);
+        Debug.LogFormat("Frame {0} - {1}: Movement executed.", Time.frameCount, this);
     }
 }
