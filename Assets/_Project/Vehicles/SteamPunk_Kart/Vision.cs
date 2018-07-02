@@ -4,11 +4,11 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 
-public class Vision : MonoBehaviour 
+public class Vision : MonoBehaviour
 {
     #region FIELDS
-    private float visibleDistance = 200f;
-    private const int rayCount = 5; 
+    private float visibleDistance = 50f;
+    private const int rayCount = 5;
     #endregion
 
     #region PROPERTIES
@@ -16,14 +16,14 @@ public class Vision : MonoBehaviour
     public bool ControlledByBrain { get; private set; } = false;
     #endregion
 
-    private void Awake ()
+    private void Awake()
     {
         ControlledByBrain = GetComponent<Brain>() ? true : false;
         if (ControlledByBrain) Debug.Log("Controlled by Brain. Raycasting in Update() disabled.");
     }
 
     // Update is called once per frame
-    void Update ()
+    void Update()
     {
         if (!ControlledByBrain)
         {
@@ -35,7 +35,7 @@ public class Vision : MonoBehaviour
     /// Rays are being cast in constant steps starting from the left vector [0].
     /// Resulting hits are stored in an array.
     /// </summary>
-    public void CastRays ()
+    public void CastRays()
     {
         // Direction of the first raycast.
         var nextRayDirection = -transform.right;
