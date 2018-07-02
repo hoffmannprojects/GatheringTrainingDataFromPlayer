@@ -1284,7 +1284,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1874323230944402
 GameObject:
   m_ObjectHideFlags: 1
@@ -5114,9 +5114,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 176d5566191e6fd438c46892c1708c90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  epochs: 2000
-  dataSetFileName: TrainingData.txt
-  weightsFileName: Weights.txt
+  epochs: 1000
+  dataSetFileName: Speed50_Rotation100_TrainingData.txt
+  weightsFileName: Speed50_Rotation100_Weights.txt
   loadWeightsFromFile: 0
 --- !u!114 &114470641734760480
 MonoBehaviour:

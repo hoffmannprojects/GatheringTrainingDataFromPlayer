@@ -23,7 +23,7 @@ public class TrainingDataCollector : MonoBehaviour
         carController = GetComponent<CarController>();
         Assert.IsNotNull(carController);
 
-        filePath = Application.dataPath + "/_Project/ANN/Data/Speed" + carController.Speed + "_rotation" + carController.RotationSpeed + "_" + "TrainingData.txt";
+        filePath = Application.dataPath + "/_Project/ANN/Data/Speed" + carController.Speed + "_Rotation" + carController.RotationSpeed + "_" + "TrainingData.txt";
         // Protect against overwrating an existing file.
         if (!File.Exists(filePath))
         {

@@ -10,7 +10,7 @@ public class Brain : MonoBehaviour
 {
     [SerializeField] private int epochs = 1000;
     [SerializeField] private string dataSetFileName = "TrainingData.txt";
-    [SerializeField] private string weightsFileName = "Weights.txt";
+    [SerializeField] private string weightsFileName = "Speed50_Rotation100_Weights.txt";
     [SerializeField] private bool loadWeightsFromFile = false;
 
     private bool trainingDone = false;
