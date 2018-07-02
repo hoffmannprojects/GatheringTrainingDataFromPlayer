@@ -1284,7 +1284,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1874323230944402
 GameObject:
   m_ObjectHideFlags: 1
@@ -5116,6 +5116,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   epochs: 2000
   dataSetFileName: TrainingData.txt
+  weightsFileName: Weights.txt
+  loadWeightsFromFile: 0
 --- !u!114 &114470641734760480
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5127,7 +5129,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0237f951bac39c46b4a898cf24177a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visibleDistance: 200
 --- !u!114 &114761134995229922
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5139,7 +5140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 114203c87213fc44bb59d3615f48dc4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 60
+  speed: 50
   rotationSpeed: 100
 --- !u!137 &137335398612714566
 SkinnedMeshRenderer:

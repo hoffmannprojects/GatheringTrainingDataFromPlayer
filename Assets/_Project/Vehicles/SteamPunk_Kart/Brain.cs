@@ -21,7 +21,7 @@ public class Brain : MonoBehaviour
     private Text[] debugTexts;
     private Vision vision;
     private CarController carController;
-    private string dataSetFolder = "/_Project/ANN/";
+    private string dataSetFolder = "/_Project/ANN/Data/";
 
     // Use this for initialization
     private void Start()

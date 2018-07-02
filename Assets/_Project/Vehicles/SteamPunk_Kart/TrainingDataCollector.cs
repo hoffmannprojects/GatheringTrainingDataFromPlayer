@@ -4,8 +4,8 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-[RequireComponent( typeof(CarController), typeof(Vision) )]
-public class TrainingDataCollector : MonoBehaviour 
+[RequireComponent(typeof(CarController), typeof(Vision))]
+public class TrainingDataCollector : MonoBehaviour
 {
     private StreamWriter dataSetFile = null;
     // The collection of instances of (training) data.
@@ -14,16 +14,16 @@ public class TrainingDataCollector : MonoBehaviour
     private CarController carController;
     private string filePath = null;
 
-	// Use this for initialization
-	private void Start () 
-	{
+    // Use this for initialization
+    private void Start()
+    {
         vision = GetComponent<Vision>();
         Assert.IsNotNull(vision);
 
         carController = GetComponent<CarController>();
         Assert.IsNotNull(carController);
 
-        filePath = Application.dataPath + "/_Project/ANN/TrainingData.txt";
+        filePath = Application.dataPath + "/_Project/ANN/Data/Speed" + carController.Speed + "_rotation" + carController.RotationSpeed + "_" + "TrainingData.txt";
         // Protect against overwrating an existing file.
         if (!File.Exists(filePath))
         {
@@ -33,9 +33,9 @@ public class TrainingDataCollector : MonoBehaviour
         {
             Debug.LogWarning("Data set file already exists. Rename or delete before recording new training data.");
         }
-	}
+    }
 
-    private void LateUpdate ()
+    private void LateUpdate()
     {
         CollectNewInstance();
     }
@@ -43,7 +43,7 @@ public class TrainingDataCollector : MonoBehaviour
     /// <summary>
     /// Collects a new Instance (row of data) with features (columns of data) in the training set, if data is new.
     /// </summary>
-    private void CollectNewInstance ()
+    private void CollectNewInstance()
     {
         string instance = null;
 
@@ -63,12 +63,12 @@ public class TrainingDataCollector : MonoBehaviour
         }
     }
 
-    private void OnApplicationQuit ()
+    private void OnApplicationQuit()
     {
         WriteDataSetToFileAndClose();
     }
 
-    private void WriteDataSetToFileAndClose ()
+    private void WriteDataSetToFileAndClose()
     {
         if (dataSetFile != null)
         {

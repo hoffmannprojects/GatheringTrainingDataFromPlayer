@@ -4,10 +4,10 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 
-public class CarController : MonoBehaviour 
+public class CarController : MonoBehaviour
 {
-    private float speed = 60f;
-    private float rotationSpeed = 100.0F;
+    [SerializeField] private float speed = 50f;
+    [SerializeField] private float rotationSpeed = 100.0F;
 
     #region PROPERTIES
     public float TranslationInput { get; set; } = 0;
@@ -39,13 +39,13 @@ public class CarController : MonoBehaviour
     public bool ControlledByBrain { get; private set; } = false;
     #endregion
 
-    private void Awake ()
+    private void Awake()
     {
         ControlledByBrain = GetComponent<Brain>() ? true : false;
         if (ControlledByBrain) Debug.Log("Controlled by Brain. User control disabled.");
     }
 
-    protected void Update ()
+    protected void Update()
     {
         if (!ControlledByBrain)
         {
@@ -56,7 +56,7 @@ public class CarController : MonoBehaviour
         }
     }
 
-    public void MoveCar ()
+    public void MoveCar()
     {
         Debug.LogFormat("Frame {0} - {1}: Reading input.", Time.frameCount, this);
         float translation = TranslationInput * Speed * Time.deltaTime;
