@@ -63,6 +63,5 @@ public class Vision : MonoBehaviour
             }
             nextRayDirection = Quaternion.AngleAxis(angleStepSize, Vector3.up) * nextRayDirection;
         }
-        Debug.LogFormat("Frame {0} - {1}: Raycasts executed.", Time.frameCount, this);
     }
 }

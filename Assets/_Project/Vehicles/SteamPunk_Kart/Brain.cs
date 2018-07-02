@@ -196,7 +196,6 @@ public class Brain : MonoBehaviour
 
         carController.TranslationInput = translationInput;
         carController.RotationInput = rotationInput;
-        Debug.LogFormat("Frame {0} - {1}: Input values set in CarController.", Time.frameCount, this);
 
         carController.MoveCar();
     }
