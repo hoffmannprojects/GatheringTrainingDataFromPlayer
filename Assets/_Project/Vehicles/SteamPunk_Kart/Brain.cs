@@ -5,11 +5,12 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
 
-[RequireComponent (typeof (Vision))]
-public class Brain : MonoBehaviour 
+[RequireComponent(typeof(Vision))]
+public class Brain : MonoBehaviour
 {
     [SerializeField] private int epochs = 1000;
     [SerializeField] private string dataSetFileName = "TrainingData.txt";
+    [SerializeField] private string weightsFileName = "Weights.txt";
     [SerializeField] private bool loadWeightsFromFile = false;
 
     private bool trainingDone = false;
@@ -20,9 +21,10 @@ public class Brain : MonoBehaviour
     private Text[] debugTexts;
     private Vision vision;
     private CarController carController;
+    private string dataSetFolder = "/_Project/ANN/";
 
     // Use this for initialization
-    private void Start ()
+    private void Start()
     {
         InitializeReferences();
 
@@ -38,7 +40,7 @@ public class Brain : MonoBehaviour
         }
     }
 
-    private void InitializeReferences ()
+    private void InitializeReferences()
     {
         debugTexts = GameObject.Find("DebugTexts").GetComponentsInChildren<Text>();
         Assert.IsNotNull(debugTexts);
@@ -54,9 +56,9 @@ public class Brain : MonoBehaviour
     /// Loads the training dataset.
     /// </summary>
     /// <returns> null (Coroutine). </returns>
-    private IEnumerator LoadTrainingSet ()
+    private IEnumerator LoadTrainingSet()
     {
-        string dataSetFilePath = Application.dataPath + "/_Project/ANN/" + dataSetFileName;
+        string dataSetFilePath = Application.dataPath + dataSetFolder + dataSetFileName;
 
         // An instance of training (row in the dataSet).
         string instance;
@@ -92,6 +94,7 @@ public class Brain : MonoBehaviour
 
                     // Ignore instances, where no user input was recorded.
                     // They provide no useful information.
+                    // TODO: Fix floating point number comparison!?
                     if (System.Convert.ToDouble(features[5]) != 0
                         && System.Convert.ToDouble(features[6]) != 0)
                     {
@@ -146,7 +149,7 @@ public class Brain : MonoBehaviour
     /// Discards the current iteration's results if no improvement was made.
     /// </summary>
     /// <param name="currentWeights"> The weights to be re-loaded, if no improvement was made. </param>
-    private void AdaptLearning (string currentWeights)
+    private void AdaptLearning(string currentWeights)
     {
         if (lastSumSquaredError < sumSquaredError)
         {
@@ -166,7 +169,7 @@ public class Brain : MonoBehaviour
         }
     }
 
-    private void Update ()
+    private void Update()
     {
         if (!trainingDone) return;
 
@@ -180,7 +183,7 @@ public class Brain : MonoBehaviour
         ControlCar(calculatedOutputs);
     }
 
-    private void ControlCar (List<double> calculatedOutputs)
+    private void ControlCar(List<double> calculatedOutputs)
     {
         // Map back from normalized values to GetAxis()-compatible controller values.
         float translationInput = Helpers.Map(-1, 1, 0, 1, (float)calculatedOutputs[0]);
@@ -196,14 +199,14 @@ public class Brain : MonoBehaviour
     /// <summary>
     /// Calculate outputs without updating weight values as opposed to Train().
     /// </summary>
-    private List<double> CalculateOutputs (List<double> inputs, List<double> desiredOutputs)
+    private List<double> CalculateOutputs(List<double> inputs, List<double> desiredOutputs)
     {
         var calculatedOutputs = new List<double>();
         calculatedOutputs = ann.CalcOutput(inputs, desiredOutputs);
         return calculatedOutputs;
     }
 
-    private List<double> GetInputsFromRaycasts ()
+    private List<double> GetInputsFromRaycasts()
     {
         vision.CastRays();
 
@@ -216,11 +219,31 @@ public class Brain : MonoBehaviour
         return inputs;
     }
 
-    private void OnGUI ()
+    private void OnGUI()
     {
         // Update DebugTexts.
         debugTexts[0].text = "SSE: " + lastSumSquaredError;
         debugTexts[1].text = "Alpha: " + ann.alpha;
         debugTexts[2].text = "Trained: " + trainingProgress.ToString("P");
+    }
+
+    private void SaveWeightsToFile()
+    {
+        string weightsFilePath = Application.dataPath + dataSetFolder + weightsFileName;
+        StreamWriter weightsFile = File.CreateText(weightsFilePath);
+        weightsFile.WriteLine(ann.PrintWeights());
+        weightsFile.Close();
+    }
+
+    private void LoadWeightsFromFile()
+    {
+        string weightsFilePath = Application.dataPath + dataSetFolder + weightsFileName;
+        StreamReader weightsFile = File.OpenText(weightsFilePath);
+
+        if (File.Exists(weightsFilePath))
+        {
+            string line = weightsFile.ReadLine();
+            ann.LoadWeights(line);
+        }
     }
 }
