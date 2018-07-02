@@ -142,6 +142,11 @@ public class Brain : MonoBehaviour
             Debug.LogError("No training data file found at: " + dataSetFilePath);
         }
         trainingDone = true;
+
+        if (!loadWeightsFromFile)
+        {
+            SaveWeightsToFile();
+        }
     }
 
     /// <summary>
