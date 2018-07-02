@@ -947,6 +947,16 @@ Prefab:
       propertyPath: m_RootOrder
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 114296812348554124, guid: 181ce70d1485f0848a6a729b1048466f,
+        type: 2}
+      propertyPath: loadWeightsFromFile
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114296812348554124, guid: 181ce70d1485f0848a6a729b1048466f,
+        type: 2}
+      propertyPath: dataSetFileName
+      value: Speed50_Rotation100_TrainingData_Clean.txt
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 181ce70d1485f0848a6a729b1048466f, type: 2}
   m_IsPrefabAsset: 0
