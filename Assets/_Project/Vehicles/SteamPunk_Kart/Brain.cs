@@ -32,6 +32,7 @@ public class Brain : MonoBehaviour
 
         if (loadWeightsFromFile)
         {
+            LoadWeightsFromFile();
             trainingDone = true;
         }
         else
@@ -248,6 +249,11 @@ public class Brain : MonoBehaviour
         {
             string line = weightsFile.ReadLine();
             ann.LoadWeights(line);
+            Debug.Log("Loaded weights from file: " + weightsFilePath);
+        }
+        else
+        {
+            Debug.Log("Can't find Weights file at: " + weightsFilePath);
         }
     }
 }

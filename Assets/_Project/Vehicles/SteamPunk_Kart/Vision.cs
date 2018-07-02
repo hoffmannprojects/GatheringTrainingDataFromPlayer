@@ -19,7 +19,7 @@ public class Vision : MonoBehaviour
     private void Awake()
     {
         ControlledByBrain = GetComponent<Brain>() ? true : false;
-        if (ControlledByBrain) Debug.Log("Controlled by Brain. Raycasting in Update() disabled.");
+        if (ControlledByBrain) Debug.Log("Raycasting controlled by Brain.");
     }
 
     // Update is called once per frame
